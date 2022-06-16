@@ -29,18 +29,17 @@ async function getFromApiAndCreateDB() {
 
 async function getFromApiAndUpdateDB() {
   try {
-    var currencies = await Currencies.find({ base: 'EGP' });
     var base = 'EGP';
     const response = await fetch(`https://api.apilayer.com/exchangerates_data/latest?&base=${base}`, requestOptions)
     const result = await response.text();
     jsonrResult = JSON.parse(result);
-    currencies = await Currencies.updateOne({ base: 'EGP' }, {
+    let currencies = await Currencies.findOneAndUpdate({ base: 'EGP' }, {
       $set: {
         base: base,
         rates: jsonrResult.rates
       }
     });
-    dbDebugger(currencies);
+    dbDebugger('currencies', currencies);
   } catch (error) {
     dbDebugger('error', error);
   }
@@ -64,8 +63,9 @@ async function convertor(from, to, amount) {
     )
     return calcAmount;
   } catch (error) {
-    console.log('error', error);
+    dbDebugger('error', error);
   }
 }
 
-module.exports = convertor;
+exports.convertor = convertor;
+exports.updateDB = getFromApiAndUpdateDB;

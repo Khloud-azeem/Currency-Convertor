@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const convertor = require('../currency_api');
+const currency_api = require('../currency_api');
+const convertor = currency_api.convertor;
 
 router.get('/:from/:to/:amount', async (req, res) => {
     try {
